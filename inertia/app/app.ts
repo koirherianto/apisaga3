@@ -11,7 +11,7 @@ const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS'
 createInertiaApp({
   progress: { color: '#5468FF' },
 
-  title: (title: string) => `${title} - ${appName}`,
+  title: (title: string) => `${title} - ${appName} kucing`,
 
   resolve: (name: string) => {
     return resolvePageComponent(`../pages/${name}.svelte`, import.meta.glob('../pages/**/*.svelte'))
