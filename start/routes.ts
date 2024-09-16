@@ -20,6 +20,6 @@ router.group(() => {
 
 
 router.group(() => {
+    router.delete('/logout', [AuthController, 'logout'])
     router.get('/dashboard', [ProjectsController, 'index'])
-    
 }).middleware(middleware.auth())

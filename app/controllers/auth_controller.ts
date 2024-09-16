@@ -37,4 +37,9 @@ export default class AuthController {
       response.redirect().back()
     }
   }
+
+  async logout({ response, auth }: HttpContext) {
+    await auth.use('web').logout()
+    return response.status(200).json({ success: true })
+  }
 }
