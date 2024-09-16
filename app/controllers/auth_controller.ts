@@ -1,5 +1,5 @@
 import User from '#models/user'
-import { loginValidator } from '#validators/auth'
+import { loginValidator, registerValidator } from '#validators/auth'
 import type { HttpContext } from '@adonisjs/core/http'
 
 import hash from '@adonisjs/core/services/hash'
@@ -7,6 +7,16 @@ import hash from '@adonisjs/core/services/hash'
 export default class AuthController {
   async registerPage({ view }: HttpContext) {
     return view.render('auth/register')
+  }
+
+  async register({ request, response, auth }: HttpContext) {
+    const data = await request.validateUsing(registerValidator)
+
+    const user = await User.create(data)
+
+    await auth.use('web').login(user)
+
+    response.redirect('/dashboard')
   }
 
   async loginpage({ view }: HttpContext) {

@@ -1,12 +1,21 @@
 import vine from '@vinejs/vine'
-import { verifyUser } from './rules/auth.js'
 import { existRule } from './rules/exist.js'
+import { notExistRule } from './rules/not_exist.js'
 
 export const registerValidator = vine.compile(
   vine.object({
     name: vine.string().trim().minLength(4).toLowerCase(),
-    email: vine.string().trim().email(),
-    username: vine.string().trim().minLength(4).toLowerCase(),
+    email: vine
+      .string()
+      .trim()
+      .email()
+      .use(notExistRule({ table: 'users', column: 'email', message: 'Email already taken' })),
+    username: vine
+      .string()
+      .trim()
+      .minLength(4)
+      .toLowerCase()
+      .use(notExistRule({ table: 'users', column: 'username', message: 'Username already taken' })),
     password: vine.string().trim().minLength(6),
   })
 )

@@ -10,9 +10,11 @@ import router from '@adonisjs/core/services/router'
 router.get('/', [LandingController, 'index'])
 
 router.group(() => {
+    router.get('/register', [AuthController, 'registerPage'])
+    router.post('/register', [AuthController, 'register'])
+
     router.get('/login', [AuthController, 'loginpage'])
     router.post('/login', [AuthController, 'login'])
-    router.get('/register', [AuthController, 'registerPage'])
 }).middleware(middleware.guest())
 
 
