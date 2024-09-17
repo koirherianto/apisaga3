@@ -1,0 +1,126 @@
+@layout.setting({ title: "Profile | Apisaga" , user: user})
+
+<section class="bg-white dark:bg-gray-900">
+	<div class="container px-6 py-10 mx-auto">
+		<h1 class="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl dark:text-white">
+			Your <br /> awesome <span class="underline decoration-blue-500">Profile</span>
+		</h1>
+		<form class="mt-8 space-y-8" method="POST" action="{{ route('profiles.update', [user.username], { formAction: 'put' }) }}?_method=PUT" >
+            {{ csrfField() }}
+			<div class="space-y-12">
+				<div class="border-b border-gray-900/10 pb-12">
+					<h2 class="text-base font-semibold leading-7 text-gray-900">😊👍🫡</h2>
+					<p class="mt-1 text-sm leading-6 text-gray-600">
+						This information will be displayed publicly so be careful what you share.
+					</p>
+				</div>
+
+				<div class="border-b border-gray-900/10 pb-12">
+					<div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+						<div class="sm:col-span-4">
+							<label for="email" class="block text-sm font-medium leading-6 text-gray-900">
+								Name
+							</label>
+							<div class="mt-2">
+								<input
+									id="name"
+									name="name"
+									type="text"
+									required
+									value={{ user.name }}
+									autocomplete="given-name"
+									class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+								/>
+							</div>
+                            @inputError('name')
+                                @each(message in $messages)
+                                    <p class="text-warning font-thin">{{ message }}</p>
+                                @end
+                            @end
+						</div>
+						<div class="sm:col-span-4">
+							<label for="email" class="block text-sm font-medium leading-6 text-gray-900">
+								Email address
+							</label>
+							<div class="mt-2">
+								<input
+									id="email"
+									name="email"
+									type="email"
+									required
+									autocomplete="email"
+									value={{ user.email }}
+									class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+								/>
+							</div>
+							@inputError('email')
+                                @each(message in $messages)
+                                    <p class="text-warning font-thin">{{ message }}</p>
+                                @end
+                            @end
+						</div>
+						<div class="sm:col-span-4">
+							<label for="username" class="block text-sm font-medium leading-6 text-gray-900"
+								>Username
+							</label>
+							<div class="mt-1">
+								<div
+									class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md"
+								>
+									<span class="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
+										apisaga.com/u/
+									</span>
+									<input
+										type="text"
+										name="username"
+										id="username"
+										autocomplete="username"
+										required
+										value={{ user.username }}
+										placeholder="username"
+										class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+									/>
+								</div>
+							</div>
+                            @inputError('username')
+                                @each(message in $messages)
+                                    <p class="text-warning font-thin">{{ message }}</p>
+                                @end
+                            @end
+						</div>
+						<div class="sm:col-span-4">
+							<label for="email" class="block text-sm font-medium leading-6 text-gray-900">
+								Password
+							</label>
+							<p class="mt-1 text-sm leading-6 text-gray-600">
+								Leave blank to keep the same password.
+							</p>
+							<div class="mt-2">
+								<input
+									id="password"
+									name="password"
+									type="password"
+									class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+								/>
+							</div>
+                            @inputError('password')
+                                @each(message in $messages)
+                                    <p class="text-warning font-thin">{{ message }}</p>
+                                @end
+                            @end
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="mt-6 flex items-center justify-end gap-x-6">
+                <a href="{{ route('projects.index', [user.username]) }}">
+                    <button type="button" class="text-sm font-semibold leading-6 text-gray-900 ">Cancel</button>
+                </a>
+				<button type="submit" class="mx-5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    Save
+                </button>
+			</div>
+		</form>
+	</div>
+</section>
+@end
