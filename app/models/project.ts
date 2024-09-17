@@ -4,6 +4,7 @@ import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 // import Version from '#models/version'
 import User from './user.js'
 import string from '@adonisjs/core/helpers/string'
+import Version from './version.js'
 export default class Project extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
@@ -52,8 +53,8 @@ export default class Project extends BaseModel {
     project.slug = slug
   }
 
-  // @hasMany(() => Version)
-  // declare versions: HasMany<typeof Version>
+  @hasMany(() => Version)
+  declare versions: HasMany<typeof Version>
 
   @manyToMany(() => User, {
     pivotTimestamps: true,

@@ -3,9 +3,9 @@ import { BaseModel, beforeCreate, beforeUpdate, belongsTo, column } from '@adoni
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import string from '@adonisjs/core/helpers/string'
 import Topbar from './topbar.js'
-import LeftbarSeparator from './leftbar_separator.js'
+import PageParent from './page_parent.js'
 
-export default class LeftbarItem extends BaseModel {
+export default class Page extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
 
@@ -13,7 +13,7 @@ export default class LeftbarItem extends BaseModel {
   declare topbarId: string
 
   @column()
-  declare leftbarSeparatorId: string | null
+  declare pageParentId: string | null
 
   @column()
   declare name: string
@@ -37,22 +37,22 @@ export default class LeftbarItem extends BaseModel {
   declare updatedAt: DateTime
 
   @beforeCreate()
-  static async assignUuid(leftbarItem: LeftbarItem) {
-    leftbarItem.id = crypto.randomUUID()
-    leftbarItem.slug = string.slug(leftbarItem.name, { lower: true })
+  static async assignUuid(page: Page) {
+    page.id = crypto.randomUUID()
+    page.slug = string.slug(page.name, { lower: true })
   }
 
   @beforeUpdate()
-  static async updateSlug(leftbarItem: LeftbarItem) {
-    leftbarItem.slug = string.slug(leftbarItem.name, { lower: true })
-    // leftbarItem.save()
+  static async updateSlug(page: Page) {
+    page.slug = string.slug(page.name, { lower: true })
+    // page.save()
   }
 
   @belongsTo(() => Topbar)
   declare topBars: BelongsTo<typeof Topbar>
 
-  @belongsTo(() => LeftbarSeparator, {
-    foreignKey: 'leftbarSeparatorId',
+  @belongsTo(() => PageParent, {
+    foreignKey: 'pageParentId',
   })
-  declare leftbarSeparator: BelongsTo<typeof LeftbarSeparator>
+  declare pageParent: BelongsTo<typeof PageParent>
 }

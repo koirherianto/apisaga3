@@ -3,8 +3,8 @@ import { BaseModel, beforeCreate, belongsTo, column, hasMany } from '@adonisjs/l
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Version from './version.js'
 import string from '@adonisjs/core/helpers/string'
-import LeftbarItem from './leftbar_item.js'
-import LeftbarSeparator from './leftbar_separator.js'
+import Page from './page.js'
+import PageParent from './page_parent.js'
 
 export default class Topbar extends BaseModel {
   @column({ isPrimary: true })
@@ -31,11 +31,11 @@ export default class Topbar extends BaseModel {
   @belongsTo(() => Version)
   declare version: BelongsTo<typeof Version>
 
-  @hasMany(() => LeftbarItem)
-  declare leftbarItems: HasMany<typeof LeftbarItem>
+  @hasMany(() => Page)
+  declare pages: HasMany<typeof Page>
 
-  @hasMany(() => LeftbarSeparator)
-  declare leftbarSeparators: HasMany<typeof LeftbarSeparator>
+  @hasMany(() => PageParent)
+  declare pageParents: HasMany<typeof PageParent>
 
   @beforeCreate()
   static async assignUuid(topbar: Topbar) {

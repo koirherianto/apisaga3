@@ -1,4 +1,4 @@
-@layout.setting({ title: "Projects | Apisaga" , user: user})
+@layout.setting({ title: "Projects | Apisaga" , user: user, isLogin: isLogin })
     
 <section class="bg-white dark:bg-gray-900">
     <div class="container mx-auto px-6 py-10">
@@ -19,7 +19,8 @@
                 </span>
                 <h1 class="text-xl font-semibold text-gray-700 capitalize dark:text-white">{{ project.title }}</h1>
                 <p class="text-gray-500 dark:text-gray-300">
-                  {{ project.description }} 
+                  {{ project.description }}
+                   {{--  {{ project.getFistVersion()}}  --}}
                 </p>
                 <p class="text-gray-800 dark:text-gray-500">
                     <b> {{ project.type }} {{ project.visibility }}</b>

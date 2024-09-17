@@ -1,3 +1,4 @@
+import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class ProfilesController {
@@ -19,5 +20,11 @@ export default class ProfilesController {
 
     session.flash({ notification: 'Profile updated successfully' })
     response.redirect().toRoute('profiles.index', { username: user.username })
+  }
+
+  async show({ view, params }: HttpContext) {
+    const user = await User.findByOrFail('username', params.username)
+    const projects = await user.related('projects').query().orderBy('created_at', 'desc').exec()
+    return view.render('profiles/show', { user, projects })
   }
 }

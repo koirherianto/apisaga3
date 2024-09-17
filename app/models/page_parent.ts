@@ -3,14 +3,14 @@ import { BaseModel, beforeCreate, belongsTo, column, hasMany } from '@adonisjs/l
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import string from '@adonisjs/core/helpers/string'
 import Topbar from './topbar.js'
-import LeftbarItem from './leftbar_item.js'
+import Page from './page.js'
 
-export default class LeftbarSeparator extends BaseModel {
+export default class PageParent extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
 
   @column()
-  declare topBarId: string
+  declare topbarId: string
 
   @column()
   declare name: string
@@ -28,31 +28,31 @@ export default class LeftbarSeparator extends BaseModel {
   declare updatedAt: DateTime
 
   @beforeCreate()
-  static async assignUuid(leftbarSeparator: LeftbarSeparator) {
-    leftbarSeparator.id = crypto.randomUUID()
+  static async assignUuid(pageParent: PageParent) {
+    pageParent.id = crypto.randomUUID()
 
-    if (leftbarSeparator.name) {
-      const baseSlug = string.slug(leftbarSeparator.name, { lower: true })
+    if (pageParent.name) {
+      const baseSlug = string.slug(pageParent.name, { lower: true })
       let slug = baseSlug
       let count = 1
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
-        const existingSeparator = await LeftbarSeparator.query().where('slug', slug).first()
-        if (!existingSeparator || existingSeparator.id === leftbarSeparator.id) {
+        const existingSeparator = await PageParent.query().where('slug', slug).first()
+        if (!existingSeparator || existingSeparator.id === pageParent.id) {
           break
         }
         slug = `${baseSlug}-${count}`
         count++
       }
 
-      leftbarSeparator.slug = slug
+      pageParent.slug = slug
     }
   }
 
   @belongsTo(() => Topbar)
   declare topbars: BelongsTo<typeof Topbar>
 
-  @hasMany(() => LeftbarItem)
-  declare leftbarItems: HasMany<typeof LeftbarItem>
+  @hasMany(() => Page)
+  declare pages: HasMany<typeof Page>
 }

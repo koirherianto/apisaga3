@@ -19,9 +19,12 @@ router.group(() => {
     router.post('/login', [AuthController, 'login'])
 }).middleware(middleware.guest())
 
+router.get('/u/:username', [ProfilesController, 'show']).as('profiles.show')
+
+
 router.group(() => {
     router.delete('/logout', [AuthController, 'logout'])
-
+    
     router.get('/u/:username/project', [ProjectsController, 'index']).as('projects.index')
     router.get('/u/:username/project/create', [ProjectsController, 'create']).as('projects.create')
     router.post('/u/:username/project', [ProjectsController, 'store']).as('projects.store')

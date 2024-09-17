@@ -1,15 +1,28 @@
-import LeftbarItem from '#models/leftbar_item'
+import Page from '#models/page'
 import Topbar from '#models/topbar'
+import User from '#models/user'
 import Version from '#models/version'
 import { createProjectValidator } from '#validators/project'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
 export default class ProjectsController {
-  async index({ view, auth }: HttpContext) {
-    const user = auth.user!
-    const projects = await user.related('projects').query()
-    return view.render('projects/index', { user, projects })
+  async index({ view, auth, params }: HttpContext) {
+    const isLogin = await auth.check()
+    let projects
+
+    if (isLogin) {
+      const user = auth.user!
+      projects = await user.related('projects').query().orderBy('created_at', 'desc').exec()
+    } else {
+      const username = await User.findBy('username', params.username)
+      if (username !== null) {
+        projects = username.related('projects').query()
+      }
+    }
+
+    // return projects
+    return view.render('projects/index', { user, projects, isLogin })
   }
 
   async create({ view, auth }: HttpContext) {
@@ -46,7 +59,7 @@ export default class ProjectsController {
         { client: trx }
       )
 
-      await LeftbarItem.create(
+      await Page.create(
         {
           topbarId: topBar.id,
           name: 'Introduction',
@@ -64,5 +77,66 @@ export default class ProjectsController {
     }
     const user = auth.user!
     return response.redirect().toRoute('projects.index', { username: user.username })
+  }
+
+  async defaultUrl({ request, params, response }: HttpContext) {
+    const project = await Project.findByOrFail('slug', params.slug)
+
+    // jika version dikirim
+    let version
+    if (request.input('version')) {
+      version = await project
+        .related('versions')
+        .query()
+        .where('slug', request.input('version'))
+        .firstOrFail()
+    } else {
+      version = await project.related('versions').query().where('is_default', true).firstOrFail()
+    }
+
+    // jika topbar dikirim
+    let topbar
+    if (request.input('topbar')) {
+      topbar = await version
+        .related('topbars')
+        .query()
+        .where('slug', request.input('topbar'))
+        .firstOrFail()
+    } else {
+      topbar = await version.related('topbars').query().where('is_default', true).firstOrFail()
+    }
+
+    const leftbarList = await topbar.related('leftbarItems').query().orderBy('order', 'asc').exec()
+
+    // jika leftbar dikirim
+    let leftbar
+    if (request.input('leftbar')) {
+      leftbar = await topbar
+        .related('leftbarItems')
+        .query()
+        .where('slug', request.input('leftbar'))
+        .firstOrFail()
+    } else {
+      leftbar = await topbar.related('leftbarItems').query().where('is_default', true).firstOrFail()
+    }
+
+    const routeUrl = {
+      repository: project.slug,
+      version: version.slug,
+      topbar: topbar.slug,
+      leftbar: leftbar.slug,
+      linkBe: `/projects/${project.slug}/versions/${version.slug}/topbars/${topbar.slug}/leftbars/${leftbar.slug}`,
+      linkFe: `${project.slug}/${version.slug}/${topbar.slug}/${leftbar.slug}`,
+    }
+
+    return response.ok({
+      success: true,
+      data: {
+        routeUrl,
+        leftbar,
+        leftbarList: leftbarList,
+      },
+      message: 'routeUrl fetched successfully',
+    })
   }
 }
