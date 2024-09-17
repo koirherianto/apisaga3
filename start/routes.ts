@@ -19,7 +19,7 @@ router.group(() => {
 
 router.group(() => {
     router.delete('/logout', [AuthController, 'logout'])
-    router.get('/u/:username/project', [ProjectsController, 'index']).as('projects')
+    router.get('/u/:username/project', [ProjectsController, 'index']).as('projects.index')
     router.get('/u/:username/project/create', [ProjectsController, 'create']).as('projects.create')
     router.post('/u/:username/project', [ProjectsController, 'store']).as('projects.store')
 }).middleware(middleware.auth())
