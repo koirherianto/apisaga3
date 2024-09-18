@@ -9,7 +9,7 @@
 		<p class="mt-4 text-gray-500 xl:mt-6 dark:text-gray-300">
 			<b>😊👍🫡😺😸🙀</b>
 		</p>
-		<form action="{{ route('projects.store', [user.username]) }}" method="POST" use:enhance>
+		<form action="{{ route('projects.store') }}" method="POST" use:enhance>
             {{ csrfField() }}
 			<div class="space-y-12">
 				<div class="border-b border-gray-900/10 pb-12">
@@ -104,7 +104,7 @@
 			</div>
 
 			<div class="mt-6 flex items-center justify-end gap-x-6">
-				<a href="{{ route('projects.index', [user.username]) }}">
+				<a href="{{ route('projects.index') }}">
 					<button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
 				</a>
 				<button

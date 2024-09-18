@@ -1,25 +1,17 @@
 import Page from '#models/page'
 import Topbar from '#models/topbar'
-import User from '#models/user'
 import Version from '#models/version'
 import { createProjectValidator } from '#validators/project'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
 export default class ProjectsController {
-  async index({ view, auth, params }: HttpContext) {
+  async index({ view, auth }: HttpContext) {
     const isLogin = await auth.check()
     let projects
 
-    if (isLogin) {
-      const user = auth.user!
-      projects = await user.related('projects').query().orderBy('created_at', 'desc').exec()
-    } else {
-      const username = await User.findBy('username', params.username)
-      if (username !== null) {
-        projects = username.related('projects').query()
-      }
-    }
+    const user = auth.user!
+    projects = await user.related('projects').query().orderBy('created_at', 'desc').exec()
 
     // return projects
     return view.render('projects/index', { user, projects, isLogin })

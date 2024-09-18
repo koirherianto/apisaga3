@@ -2,9 +2,9 @@ import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class ProfilesController {
-  index({ view, auth }: HttpContext) {
+  edit({ view, auth }: HttpContext) {
     const user = auth.user!
-    return view.render('profiles/index', { user })
+    return view.render('profiles/edit', { user })
   }
 
   async update({ request, response, auth, session }: HttpContext) {
@@ -19,7 +19,7 @@ export default class ProfilesController {
     await user.save()
 
     session.flash({ notification: 'Profile updated successfully' })
-    response.redirect().toRoute('profiles.index', { username: user.username })
+    response.redirect().toRoute('profiles.edit', { username: user.username })
   }
 
   async show({ view, params }: HttpContext) {

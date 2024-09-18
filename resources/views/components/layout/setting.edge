@@ -32,7 +32,7 @@
             <nav class="flex-1 -mx-3 space-y-3">
                 <a
                     class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
-                    href="/u/{{ user.username }}/project"
+                    href="{{ route('projects.index') }}"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -51,36 +51,34 @@
                     <span class="mx-2 text-sm font-medium">Projects</span>
                 </a>
             </nav>
-            @if(isLogin) 
-              <div class="mt-6">
-                <div class="flex items-center justify-between mt-6">
-                    <a href="/u/{{ user.username }}/profile" class="flex items-center gap-x-2">
-                        <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
-                            {{ user.name }}
-                        </span>
-                    </a>
-                    <button
-                        onclick="handleLogout(); return false;"
-                        class="text-gray-500 transition-colors duration-200 rotate-180 dark:text-gray-400 rtl:rotate-0 hover:text-blue-500 dark:hover:text-blue-400"
+            <div class="mt-6">
+              <div class="flex items-center justify-between mt-6">
+                <a href="{{ route('profiles.edit') }}" class="flex items-center gap-x-2">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+                        {{ user.name }}
+                    </span>
+                </a>
+                <button
+                    onclick="handleLogout(); return false;"
+                    class="text-gray-500 transition-colors duration-200 rotate-180 dark:text-gray-400 rtl:rotate-0 hover:text-blue-500 dark:hover:text-blue-400"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-5 h-5"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="w-5 h-5"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
-                            />
-                        </svg>
-                    </button>
-                </div>
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+                        />
+                    </svg>
+                </button>
               </div>
-            @end
+            </div>
         </div>
     </aside>
     
