@@ -20,7 +20,6 @@ router.group(() => {
 }).middleware(middleware.guest())
 
 
-
 router.group(() => {
     router.delete('/logout', [AuthController, 'logout'])
     
@@ -33,7 +32,7 @@ router.group(() => {
     router.get('/u/profile', [ProfilesController, 'edit']).as('profiles.edit')
     router.put('/u/profile', [ProfilesController, 'update']).as('profiles.update')
     
-    router.get(':projectSlug/:versionSlug/:topbarSlug/:pageSlug', [PagesController, 'index']).as('pages.index')
 }).middleware(middleware.auth())
 
 router.get('/u/:username', [ProfilesController, 'show']).as('profiles.show')
+router.get(':projectSlug/:versionSlug/:topbarSlug/:pageSlug', [PagesController, 'index']).as('pages.index')

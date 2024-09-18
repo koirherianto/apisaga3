@@ -1,14 +1,19 @@
 import Page from '#models/page'
+import Project from '#models/project'
 import Topbar from '#models/topbar'
 import Version from '#models/version'
 import { createProjectValidator, updateProjectValidator } from '#validators/project'
-import type { HttpContext } from '@adonisjs/core/http'
+import { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
 export default class ProjectsController {
   async index({ view, auth }: HttpContext) {
     const user = auth.user!
     const projects = await user.related('projects').query().orderBy('created_at', 'desc').exec()
+
+    for (const project of projects) {
+      project.defaultUrl = await this.defaultUrl(project.slug)
+    }
 
     return view.render('projects/index', { user, projects })
   }
@@ -94,64 +99,49 @@ export default class ProjectsController {
     return response.redirect().toRoute('projects.index', { username: user.username })
   }
 
-  // async defaultUrl({ request, params, response }: HttpContext) {
-  //   const project = await Project.findByOrFail('slug', params.slug)
+  async defaultUrl(
+    projectSlug: string,
+    versionSlug?: string,
+    topbarSlug?: string
+  ): Promise<string> {
+    const project = await Project.findByOrFail('slug', projectSlug)
 
-  //   // jika version dikirim
-  //   let version
-  //   if (request.input('version')) {
-  //     version = await project
-  //       .related('versions')
-  //       .query()
-  //       .where('slug', request.input('version'))
-  //       .firstOrFail()
-  //   } else {
-  //     version = await project.related('versions').query().where('is_default', true).firstOrFail()
-  //   }
+    let rangkaiUrl = projectSlug
 
-  //   // jika topbar dikirim
-  //   let topbar
-  //   if (request.input('topbar')) {
-  //     topbar = await version
-  //       .related('topbars')
-  //       .query()
-  //       .where('slug', request.input('topbar'))
-  //       .firstOrFail()
-  //   } else {
-  //     topbar = await version.related('topbars').query().where('is_default', true).firstOrFail()
-  //   }
+    let version
+    if (versionSlug) {
+      version = await project.related('versions').query().where('slug', versionSlug).firstOrFail()
+    } else {
+      version = await project.related('versions').query().where('is_default', true).first()
 
-  //   const leftbarList = await topbar.related('leftbarItems').query().orderBy('order', 'asc').exec()
+      if (!version) {
+        version = await project.related('versions').query().firstOrFail()
+      }
+    }
 
-  //   // jika leftbar dikirim
-  //   let leftbar
-  //   if (request.input('leftbar')) {
-  //     leftbar = await topbar
-  //       .related('leftbarItems')
-  //       .query()
-  //       .where('slug', request.input('leftbar'))
-  //       .firstOrFail()
-  //   } else {
-  //     leftbar = await topbar.related('leftbarItems').query().where('is_default', true).firstOrFail()
-  //   }
+    rangkaiUrl += `/${version.slug}`
 
-  //   const routeUrl = {
-  //     repository: project.slug,
-  //     version: version.slug,
-  //     topbar: topbar.slug,
-  //     leftbar: leftbar.slug,
-  //     linkBe: `/projects/${project.slug}/versions/${version.slug}/topbars/${topbar.slug}/leftbars/${leftbar.slug}`,
-  //     linkFe: `${project.slug}/${version.slug}/${topbar.slug}/${leftbar.slug}`,
-  //   }
+    // jika topbar dikirim
+    let topbar
+    if (topbarSlug) {
+      topbar = await version.related('topbars').query().where('slug', 'topbarSlug').firstOrFail()
+    } else {
+      topbar = await version.related('topbars').query().where('is_default', true).first()
+      if (!topbar) {
+        topbar = await version.related('topbars').query().firstOrFail()
+      }
+    }
 
-  //   return response.ok({
-  //     success: true,
-  //     data: {
-  //       routeUrl,
-  //       leftbar,
-  //       leftbarList: leftbarList,
-  //     },
-  //     message: 'routeUrl fetched successfully',
-  //   })
-  // }
+    rangkaiUrl += `/${topbar.slug}`
+
+    let page = await topbar.related('pages').query().where('is_default', true).first()
+
+    if (!page) {
+      page = await topbar.related('pages').query().firstOrFail()
+    }
+
+    rangkaiUrl += `/${page.slug}`
+
+    return rangkaiUrl
+  }
 }

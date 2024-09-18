@@ -33,6 +33,8 @@ export default class Project extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
+  declare defaultUrl?: string | null
+
   @beforeCreate()
   static async assignUuid(project: Project) {
     project.id = crypto.randomUUID()
