@@ -1,15 +1,16 @@
-@layout.setting({ title: "Create Projects | Apisaga" , user: user})
+@layout.setting({ title: "Edit Projects | Apisaga" , user: user})
 
   <section class="bg-white dark:bg-gray-900">
 	<div class="container px-6 py-10 mx-auto">
 		<h1 class="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl dark:text-white">
-			Create Your <br /> awesome <span class="underline decoration-blue-500">Project</span>
+			Edit Your <br /> awesome <span class="underline decoration-blue-500">Project</span>
 		</h1>
+        {{--  {{ inspect(project) }}  --}}
 
 		<p class="mt-4 text-gray-500 xl:mt-6 dark:text-gray-300">
 			<b>😊👍🫡😺😸🙀</b>
 		</p>
-		<form action="{{ route('projects.store') }}" method="POST" use:enhance>
+		<form action="{{ route('projects.update', [project.slug]) }}?_method=PUT" method="POST" use:enhance>
             {{ csrfField() }}
 			<div class="space-y-12">
 				<div class="border-b border-gray-900/10 pb-12">
@@ -27,6 +28,7 @@
 										type="text"
 										name="title"
 										id="title"
+                                        value="{{ project.title }}"
 										required
 										class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
 										placeholder="golang"
@@ -40,6 +42,7 @@
 							</div>
 						</div>
 
+                        
 						<div class="sm:col-span-4">
 							<label for="visibility" class="block text-sm font-medium leading-6 text-gray-900">
 								Visibility
@@ -50,8 +53,8 @@
 									name="visibility"
 									class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
 								>
-									<option value="public">Public</option>
-									<option value="private">Private</option>
+									<option value="public" {{ project.visibility === 'public' ? 'selected' : null }} >Public</option>
+                                    <option value="private" {{ project.visibility === 'private' ? 'selected' : null }} >Private</option>
 								</select>
 							</div>
                             @inputError('visibility')
@@ -70,8 +73,8 @@
 									name="type"
 									class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
 								>
-									<option value="version">Version</option>
-									<option value="brance">Brance</option>
+									<option value="version" {{ project.type === 'version' ? 'selected' : null }} >Version</option>
+									<option value="brance" {{ project.type === 'brance' ? 'selected' : null }} >Brance</option>
 								</select>
 							</div>
                             @inputError('type')
@@ -91,7 +94,7 @@
 									name="description"
 									rows="3"
 									class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-								></textarea>
+								>{{ project.description }} </textarea>
 							</div>
                             @inputError('description')
                                 @each(message in $messages)

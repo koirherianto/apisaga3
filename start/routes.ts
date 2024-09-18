@@ -27,6 +27,8 @@ router.group(() => {
     router.get('/u/projects', [ProjectsController, 'index']).as('projects.index')
     router.get('/u/projects/create', [ProjectsController, 'create']).as('projects.create')
     router.post('/u/projects', [ProjectsController, 'store']).as('projects.store')
+    router.get('/u/projects/:projectSlug/edit', [ProjectsController, 'edit']).as('projects.edit')
+    router.put('/u/projects/:projectSlug', [ProjectsController, 'update']).as('projects.update')
     
     router.get('/u/profile', [ProfilesController, 'edit']).as('profiles.edit')
     router.put('/u/profile', [ProfilesController, 'update']).as('profiles.update')
