@@ -1,6 +1,9 @@
 <script>
-    import Layout from './Layout.svelte'
+    import Leftbar from "./Leftbar.svelte";
 
 </script>
 
-  <Layout></Layout>
+<Leftbar>
+    <h2>y</h2>
+</Leftbar>
+  
