@@ -11,6 +11,8 @@ export default defineConfig({
     adonisjs({ entrypoints: ['inertia/app/app.ts'], reload: ['resources/views/**/*.edge'] }),
   ],
 
+  
+
   /**
    * Define aliases for importing modules from
    * your frontend code
