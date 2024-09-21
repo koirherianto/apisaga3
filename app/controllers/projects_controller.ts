@@ -124,7 +124,7 @@ export default class ProjectsController {
     // jika topbar dikirim
     let topbar
     if (topbarSlug) {
-      topbar = await version.related('topbars').query().where('slug', 'topbarSlug').firstOrFail()
+      topbar = await version.related('topbars').query().where('slug', topbarSlug).firstOrFail()
     } else {
       topbar = await version.related('topbars').query().where('is_default', true).first()
       if (!topbar) {
