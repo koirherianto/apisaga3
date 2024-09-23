@@ -21,7 +21,7 @@ router.group(() => {
 
 
 router.group(() => {
-    router.delete('/logout', [AuthController, 'logout'])
+    router.delete('/logout', [AuthController, 'logout']) // no csrf
     
     router.get('/u/projects', [ProjectsController, 'index']).as('projects.index')
     router.get('/u/projects/create', [ProjectsController, 'create']).as('projects.create')
@@ -37,3 +37,4 @@ router.group(() => {
 router.get('/u/:username', [ProfilesController, 'show']).as('profiles.show')
 router.get(':projectSlug/:versionSlug/:topbarSlug/:pageSlug', [PagesController, 'index']).as('pages.index')
 router.get(':projectSlug/:versionSlug/:topbarSlug/:pageSlug/editor', [PagesController, 'editor']).as('pages.editor')
+router.put('/api/:projectSlug/:versionSlug/:topbarSlug/:pageSlug', [PagesController, 'update']).as('pages.update') // no csrf

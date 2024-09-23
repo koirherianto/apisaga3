@@ -1,11 +1,64 @@
-@layout.app({ title: project.title Edit + " | Apisaga"})
+@layout.app({ title: project.title + " Edit | Apisaga"})
 
-<body class="flex">
+@slot('meta')
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+@endslot
+
+<body class="flex flex-col h-screen">
+  <!-- Header -->
+  <header>
+    <div class="navbar bg-base-100 border-y">
+      <div class="navbar-start">
+        <div class="dropdown">
+          <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              view="0 0 24 24"
+              stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h8m-8 6h16" />
+            </svg>
+          </div>
+          <ul
+            tabindex="0"
+            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+            <li><a>Item 1s</a></li>
+            <li>
+              <a>Parent</a>
+              <ul class="p-2">
+                <li><a>Submenu 1</a></li>
+                <li><a>Submenu 2</a></li>
+              </ul>
+            </li>
+            <li><a>Item 3</a></li>
+          </ul>
+        </div>
+        <a class="btn btn-ghost text-xl">{{ project.title }} | Apisaga</a>
+      </div>
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+          {{--  <li><a>Item 1</a></li>
+          <li><a>Item 3</a></li>  --}}
+        </ul>
+      </div>
+      <div class="navbar-end">
+        <a onclick="handleSimpan(); return false;" class="btn btn-success text-gray-50">Simpan</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout Wrapper -->
+  <div class="flex flex-1">
     <!-- Left Sidebar -->
-    <aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
-        <h1 class="font-mono underline-offset-auto">{{ project.title }}</h1>
+    <aside class="flex flex-col w-64 h-full px-5 py-2 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
         <div class="flex flex-col justify-between flex-1 mt-6">
-            <nav class="flex-1 -mx-3 space-y-3"> 
+            <nav class="flex-1 -mx-3 space-y-1"> 
               @each(page in pages)
                 <a
                     class="flex items-center py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
@@ -14,74 +67,50 @@
                     <span class="mx-2 text-sm font-medium">{{ page.name }}</span>
                 </a>
               @end
-          </nav>
-      </div>
-  </aside>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <textarea id="my-text-area"></textarea>
+    </main>
+  </div>
   
-  <!-- Main Content -->
-  <main class="flex-1 p-8 markdown-body">
-      {{{ currentPage.content }}}
-  </main>
-
-  <!-- Right Sidebar for TOC -->
-  <aside id="toc" class="w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-l rtl:border-l-0 rtl:border-r dark:bg-gray-900 dark:border-gray-700">
-      <h2 class="font-bold text-lg mb-4">Table of Contents</h2>
-      <nav id="toc-list" class="space-y-2 text-sm">
-          <!-- Dynamic TOC will be inserted here -->
-      </nav>
-  </aside>
-
-  <!-- Include this script at the end of the body -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const content = document.querySelector('main');
-        const tocList = document.getElementById('toc-list');
-
-        // Function to generate TOC
-        function generateTOC() {
-            tocList.innerHTML = ''; // Clear previous TOC entries
-            const headers = content.querySelectorAll('h2, h3, h4');
-            
-            headers.forEach((header, index) => {
-                if (!header.id) {
-                    header.id = 'toc-header-' + index;
-                }
-
-                const link = document.createElement('a');
-                link.href = '#' + header.id;
-                link.textContent = header.textContent;
-                link.classList.add('block', 'hover:underline');
-                
-                if (header.tagName === 'H3') {
-                    link.classList.add('ml-4');
-                } else if (header.tagName === 'H4') {
-                    link.classList.add('ml-8');
-                }
-
-                tocList.appendChild(link);
-
-                link.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    document.getElementById(header.id).scrollIntoView({ behavior: 'smooth' });
-                });
-            });
-        }
-
-        // Initial TOC generation
-        generateTOC();
-
-        // Monitor changes in the main content
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'childList') {
-                    generateTOC(); // Regenerate TOC on content change
-                }
-            });
-        });
-
-        observer.observe(content, { childList: true, subtree: true });
+    const easymde = new EasyMDE({
+      element: document.getElementById('my-text-area'),
+      toolbar: [
+        'heading-1','heading-2','heading-3','bold', 'italic', 'heading', '|',
+        'quote', 'unordered-list', 'ordered-list', '|',
+        'link', 'image', 'table', '|',
+        'preview', 'side-by-side', 'fullscreen', '|',
+        'guide'
+      ],
+      autofocus: true,
+      initialValue: `{{ currentPage.content }}`
     });
-  </script>
 
+    async function handleSimpan() {
+      console.log('tombol di klik', easymde.value());
+      
+      const response = await fetch('{{ route('pages.update', [project.slug,version.slug,topbar.slug,currentPage.slug]) }}', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: easymde.value(),
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Content saved successfully!');
+      } else {
+        alert('Failed to save content!');
+      }
+    }
+  </script>
 </body>
 @end

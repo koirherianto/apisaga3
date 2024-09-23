@@ -17,7 +17,7 @@ const shieldConfig = defineConfig({
    */
   csrf: {
     enabled: true,
-    exceptRoutes: ['/api/*', '/logout'],
+    exceptRoutes: ['/api/*', '/logout', '/api/:projectSlug/:versionSlug/:topbarSlug/:pageSlug'],
     enableXsrfCookie: true,
     methods: ['POST', 'PUT', 'PATCH', 'DELETE'],
   },

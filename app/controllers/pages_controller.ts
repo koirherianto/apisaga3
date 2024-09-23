@@ -34,7 +34,31 @@ export default class PagesController {
     return view.render('pages/editor', { project, version, topbar, pages, currentPage })
   }
 
-  async pages(
+  async update({ params, request, response }: HttpContext) {
+    console.log('masuk controller')
+
+    const project = await Project.query().where('slug', params.projectSlug).firstOrFail()
+
+    const [version, topbar, pages, currentPage] = await this.pages(
+      project,
+      params.versionSlug,
+      params.topbarSlug,
+      params.pageSlug
+    )
+
+    currentPage.content = request.input('content')
+
+    await currentPage.save()
+
+    return response.redirect().toRoute('pages.index', {
+      projectSlug: project.slug,
+      versionSlug: version.slug,
+      topbarSlug: topbar.slug,
+      pageSlug: currentPage.slug,
+    })
+  }
+
+  private async pages(
     project: Project,
     versionSlug?: string,
     topbarSlug?: string,
