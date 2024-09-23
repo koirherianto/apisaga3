@@ -2,26 +2,31 @@ import Page from '#models/page'
 import Project from '#models/project'
 import Topbar from '#models/topbar'
 import Version from '#models/version'
+import { marked } from 'marked'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class PagesController {
-  async index({ inertia, params }: HttpContext) {
+  async index({ params, view }: HttpContext) {
     const project = await Project.query().where('slug', params.projectSlug).firstOrFail()
 
-    const [version, topbar, pages] = await this.pages(
+    const [version, topbar, pages, currentPage] = await this.pages(
       project,
       params.versionSlug,
-      params.topbarSlug
+      params.topbarSlug,
+      params.pageSlug
     )
 
-    return inertia.render('pages/index', { project, version, topbar, pages })
+    currentPage.content = await marked.parse(currentPage.content ?? '')
+
+    return view.render('pages/index', { project, version, topbar, pages, currentPage })
   }
 
   async pages(
     project: Project,
     versionSlug?: string,
-    topbarSlug?: string
-  ): Promise<[Version, Topbar, Page[]]> {
+    topbarSlug?: string,
+    pageSlug?: string
+  ): Promise<[Version, Topbar, Page[], Page]> {
     let version
     if (versionSlug) {
       version = await project.related('versions').query().where('slug', versionSlug).firstOrFail()
@@ -44,8 +49,18 @@ export default class PagesController {
       }
     }
 
+    let page
+    if (pageSlug) {
+      page = await topbar.related('pages').query().where('slug', pageSlug).firstOrFail()
+    } else {
+      page = await topbar.related('pages').query().where('is_default', true).first()
+      if (!page) {
+        page = await topbar.related('pages').query().firstOrFail()
+      }
+    }
+
     const pages = await topbar.related('pages').query().orderBy('order').exec()
 
-    return [version, topbar, pages]
+    return [version, topbar, pages, page]
   }
 }
