@@ -21,6 +21,19 @@ export default class PagesController {
     return view.render('pages/index', { project, version, topbar, pages, currentPage })
   }
 
+  async editor({ params, view }: HttpContext) {
+    const project = await Project.query().where('slug', params.projectSlug).firstOrFail()
+
+    const [version, topbar, pages, currentPage] = await this.pages(
+      project,
+      params.versionSlug,
+      params.topbarSlug,
+      params.pageSlug
+    )
+
+    return view.render('pages/editor', { project, version, topbar, pages, currentPage })
+  }
+
   async pages(
     project: Project,
     versionSlug?: string,

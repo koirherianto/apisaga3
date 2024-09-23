@@ -36,3 +36,4 @@ router.group(() => {
 
 router.get('/u/:username', [ProfilesController, 'show']).as('profiles.show')
 router.get(':projectSlug/:versionSlug/:topbarSlug/:pageSlug', [PagesController, 'index']).as('pages.index')
+router.get(':projectSlug/:versionSlug/:topbarSlug/:pageSlug/editor', [PagesController, 'editor']).as('pages.editor')
