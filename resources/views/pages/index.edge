@@ -1,0 +1,91 @@
+@layout.app({ title: project.title + " | Apisaga"})
+
+@slot('meta')
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.6.1/github-markdown.min.css" integrity="sha512-heNHQxAqmr9b5CZSB7/7NSC96qtb9HCeOKomgLFv9VLkH+B3xLgUtP73i1rM8Gpmfaxb7262LFLJaH/hKXyxyA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+@endslot
+
+<body class="flex">
+    <!-- Left Sidebar -->
+    <aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
+        <h1 class="font-mono underline-offset-auto">{{ project.title }}</h1>
+        <div class="flex flex-col justify-between flex-1 mt-6">
+            <nav class="flex-1 -mx-3 space-y-3"> 
+              @each(page in pages)
+                <a
+                    class="flex items-center py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
+                    href="/{{project.slug}}/{{version.slug}}/{{topbar.slug}}/{{page.slug}}"
+                >
+                    <span class="mx-2 text-sm font-medium">{{ page.name }}</span>
+                </a>
+              @end
+          </nav>
+      </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="flex-1 p-8 markdown-body">
+      {{{ currentPage.content }}}
+  </main>
+
+  <!-- Right Sidebar for TOC -->
+  <aside id="toc" class="w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-l rtl:border-l-0 rtl:border-r dark:bg-gray-900 dark:border-gray-700">
+      <h2 class="font-bold text-lg mb-4">Table of Contents</h2>
+      <nav id="toc-list" class="space-y-2 text-sm">
+          <!-- Dynamic TOC will be inserted here -->
+      </nav>
+  </aside>
+
+  <!-- Include this script at the end of the body -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const content = document.querySelector('main');
+        const tocList = document.getElementById('toc-list');
+
+        // Function to generate TOC
+        function generateTOC() {
+            tocList.innerHTML = ''; // Clear previous TOC entries
+            const headers = content.querySelectorAll('h2, h3, h4');
+            
+            headers.forEach((header, index) => {
+                if (!header.id) {
+                    header.id = 'toc-header-' + index;
+                }
+
+                const link = document.createElement('a');
+                link.href = '#' + header.id;
+                link.textContent = header.textContent;
+                link.classList.add('block', 'hover:underline');
+                
+                if (header.tagName === 'H3') {
+                    link.classList.add('ml-4');
+                } else if (header.tagName === 'H4') {
+                    link.classList.add('ml-8');
+                }
+
+                tocList.appendChild(link);
+
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    document.getElementById(header.id).scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        }
+
+        // Initial TOC generation
+        generateTOC();
+
+        // Monitor changes in the main content
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    generateTOC(); // Regenerate TOC on content change
+                }
+            });
+        });
+
+        observer.observe(content, { childList: true, subtree: true });
+    });
+  </script>
+
+</body>
+@end
