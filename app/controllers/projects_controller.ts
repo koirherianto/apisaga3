@@ -35,7 +35,7 @@ export default class ProjectsController {
       const version = await Version.create(
         {
           projectId: project.id,
-          name: project.type === 'version' ? '1.0.0' : 'Main',
+          name: project.type === 'version' ? 'i' : 'i',
           isDefault: true,
           visibility: 'public',
         },

@@ -21,6 +21,45 @@ export default class PagesController {
     return view.render('pages/index', { project, version, topbar, pages, currentPage })
   }
 
+  async store({ params, request, response }: HttpContext) {
+    const project = await Project.query().where('slug', params.projectSlug).firstOrFail()
+
+    const [version, topbar, pages] = await this.pages(
+      project,
+      params.versionSlug,
+      params.topbarSlug,
+      params.pageSlug
+    )
+
+    // apakah ada page yang bernama sama
+    let lastOrder = 0
+    for (const checkPage of pages) {
+      if (checkPage.name === request.input('title')) {
+        return response.redirect().back()
+      }
+      if (checkPage.order > lastOrder) {
+        lastOrder = checkPage.order
+      }
+    }
+
+    lastOrder += 1
+
+    const newPage = new Page()
+    newPage.name = request.input('title')
+    newPage.content = '# Write your content here'
+    newPage.isDefault = false
+    newPage.order = lastOrder
+
+    await topbar.related('pages').save(newPage)
+
+    return response.redirect().toRoute('pages.editor', {
+      projectSlug: project.slug,
+      versionSlug: version.slug,
+      topbarSlug: topbar.slug,
+      pageSlug: newPage.slug,
+    })
+  }
+
   async editor({ params, view }: HttpContext) {
     const project = await Project.query().where('slug', params.projectSlug).firstOrFail()
 
@@ -35,11 +74,9 @@ export default class PagesController {
   }
 
   async update({ params, request, response }: HttpContext) {
-    console.log('masuk controller')
-
     const project = await Project.query().where('slug', params.projectSlug).firstOrFail()
 
-    const [version, topbar, pages, currentPage] = await this.pages(
+    const [version, topbar, , currentPage] = await this.pages(
       project,
       params.versionSlug,
       params.topbarSlug,

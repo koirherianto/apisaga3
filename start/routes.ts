@@ -31,10 +31,12 @@ router.group(() => {
     
     router.get('/u/profile', [ProfilesController, 'edit']).as('profiles.edit')
     router.put('/u/profile', [ProfilesController, 'update']).as('profiles.update')
+
+    router.post(':projectSlug/:versionSlug/:topbarSlug/:pageSlug', [PagesController, 'store']).as('pages.store')
+router.get(':projectSlug/:versionSlug/:topbarSlug/:pageSlug/editor', [PagesController, 'editor']).as('pages.editor')
+router.put('/api/:projectSlug/:versionSlug/:topbarSlug/:pageSlug', [PagesController, 'update']).as('pages.update') // no csrf
     
 }).middleware(middleware.auth())
 
 router.get('/u/:username', [ProfilesController, 'show']).as('profiles.show')
 router.get(':projectSlug/:versionSlug/:topbarSlug/:pageSlug', [PagesController, 'index']).as('pages.index')
-router.get(':projectSlug/:versionSlug/:topbarSlug/:pageSlug/editor', [PagesController, 'editor']).as('pages.editor')
-router.put('/api/:projectSlug/:versionSlug/:topbarSlug/:pageSlug', [PagesController, 'update']).as('pages.update') // no csrf
