@@ -4,6 +4,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="The best platform to create, manage, and share high-quality documentation for your code and software projects. Simplify the process of documenting your development work.">
+  <meta name="keywords" content="program documentation, code documentation, software documentation, project documentation, API documentation, developer documentation, create documentation, manage projects, software development">
+  <meta name="author" content="Apisaga">
+
+  <title>Apisaga | Write, Manage, and Share Your Documentation</title>
+
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   <style>
     .pattern {
@@ -11,76 +19,69 @@
     }
   </style>
 </head>
-
-<body>
-
-  <header class="bg-gray-900 pattern">
+@eval(await auth.check())
+<body class="bg-gray-900 pattern">
+  <header>
     <div class="container px-6 mx-auto">
       <nav class="flex flex-col py-6 sm:flex-row sm:justify-between sm:items-center">
         <a href="/">
-          <img class="w-auto h-6 sm:h-7" src="https://merakiui.com/images/logo.svg" alt="" />
+          <img class="w-auto h-6 sm:h-7" src="https://merakiui.com/images/logo.svg" alt="Apisaga logo" />
         </a>
 
         <div class="flex items-center mt-2 -mx-2 sm:mt-0">
-          <a href="/login"
-            class="px-3 py-1 text-sm font-semibold text-white transition-colors duration-300 transform border-2 rounded-md hover:bg-gray-700">Sign
-            In</a>
-          <a href="/register"
-            class="px-3 py-2 mx-2 text-sm font-semibold text-white transition-colors duration-300 transform bg-black rounded-md hover:bg-gray-800">Sign
-            Up</a>
+          @if(auth.isAuthenticated)
+            <a href="/u/projects" class="px-3 py-1 text-sm font-semibold text-white transition-colors duration-300 transform border-2 rounded-md hover:bg-gray-700">
+              Dashboard
+            </a>
+            <a href="/logout" class="px-3 py-2 mx-2 text-sm font-semibold text-white transition-colors duration-300 transform bg-black rounded-md hover:bg-gray-800">
+              Logout
+            </a>
+          @else
+            <a href="/login" class="px-3 py-1 text-sm font-semibold text-white transition-colors duration-300 transform border-2 rounded-md hover:bg-gray-700"></a>
+              Sign In
+            </a>
+            <a href="/register" class="px-3 py-2 mx-2 text-sm font-semibold text-white transition-colors duration-300 transform bg-black rounded-md hover:bg-gray-800">
+              Sign Up
+            </a>
+          @end
         </div>
       </nav>
+  </header>
 
-      <div class="flex flex-col items-center py-6 lg:h-[36rem] lg:flex-row">
-        <div class="lg:w-1/2">
-          <h2 class="text-3xl font-semibold text-gray-100 lg:text-4xl">
-            Apisaga
-          </h2>
+  <section class="px-10">
+    <div class="flex flex-col items-center py-6 lg:h-[36rem] lg:flex-row">
+      <div class="lg:w-1/2">
+        <h2 class="text-3xl font-semibold text-gray-100 lg:text-4xl">
+          Apisaga
+        </h2>
 
-          <h3 class="mt-2 text-2xl font-semibold text-gray-100">
-            Hello <span class="text-blue-400">Devaloper</span>
-          </h3>
+        <h3 class="mt-2 text-2xl font-semibold text-gray-100">
+          Hello <span class="text-blue-400">Devaloper</span>
+        </h3>
 
-          <p class="mt-4 text-gray-100">
-            Create and manage your program documentation effortlessly with Apisaga. No code, no hosting
-            required. Sign up now!
-          </p>
-        </div>
+        <p class="mt-4 text-gray-100">
+          Create and manage your program documentation effortlessly with Apisaga. No code, no hosting
+          required. Sign up now!
+        </p>
+      </div>
 
-        <div class="flex mt-8 lg:w-1/2 lg:justify-end lg:mt-0">
-          <div class="w-full max-w-md bg-white rounded-lg dark:bg-gray-800">
-            <div class="px-6 py-8 text-center">
-              <h2 class="text-2xl font-semibold text-gray-700 dark:text-white fo">
-                Sign In
-              </h2>
-
-              <form action="#">
-                <div class="mt-4">
-                  <input
-                    class="block w-full px-4 py-2 text-gray-700 placeholder-gray-400 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-500 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:ring-blue-300 focus:outline-none focus:ring"
-                    type="email" placeholder="Email address" aria-label="Email address" />
-                  <input
-                    class="block w-full px-4 py-2 mt-4 text-gray-700 placeholder-gray-400 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-500 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:ring-blue-300 focus:outline-none focus:ring"
-                    type="password" placeholder="Password" aria-label="Password" />
-                </div>
-
-                <div class="flex items-center justify-between mt-4">
-                  <a href="/" class="text-sm text-gray-600 dark:text-gray-200 hover:underline">
-                    Forget Password?
-                  </a>
-
-                  <button
-                    class="px-6 py-2 font-medium text-white transition-colors duration-300 transform bg-gray-900 rounded-md hover:bg-gray-800 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-800 dark:focus:bg-gray-700">
-                    Sign In
-                  </button>
-                </div>
-              </form>
+      <div class="flex mt-8 lg:w-1/2 lg:justify-end lg:mt-0">
+        <div class="diff aspect-[16/9]">
+          <div class="diff-item-1">
+            <div class="bg-primary text-primary-content grid place-content-center text-9xl font-black">
+              DAISY
             </div>
           </div>
+          <div class="diff-item-2">
+            <div class="bg-base-200 grid place-content-center text-9xl font-black">DAISY</div>
+          </div>
+          <div class="diff-resizer"></div>
         </div>
       </div>
     </div>
-  </header>
+  </section>
+      
+  
 </body>
 
 </html>
