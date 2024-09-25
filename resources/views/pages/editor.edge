@@ -53,7 +53,7 @@
             </a>
           </li>
           <li>
-            <a href="{{ route('pages.index', [project.slug, version.slug, topbar.slug, currentPage.slug]) }}" class="tooltip" data-tip="Real View">
+            <a href="{{ route('pages.index', [project.slug, version.slug, topbar.slug, currentPage.slug]) }}" class="tooltip tooltip-info" data-tip="Real View" target="_blank">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -83,7 +83,7 @@
     <aside class="flex flex-col w-64 h-full px-5 py-2 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
         <div class="flex flex-col justify-between flex-1 mt-6">
             <nav class="flex-1 -mx-3 space-y-1"> 
-              @each(page in pages)
+              {{--  @each(page in pages)
                 <a
                   class="flex items-center py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700 justify-between"  
                   href="/{{project.slug}}/{{version.slug}}/{{topbar.slug}}/{{page.slug}}/editor"
@@ -93,7 +93,31 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
                   </svg>
                 </a>
-              @end
+              @end  --}}
+
+              @each(page in pages)
+                <a
+                  class="flex items-center py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700 justify-between"
+                  href="/{{project.slug}}/{{version.slug}}/{{topbar.slug}}/{{page.slug}}/editor"
+                >
+                  <span class="mx-2 text-sm font-medium">{{ page.name }}</span>
+                  <!-- Tombol Edit -->
+                  <svg 
+                    data-page-name="{{ page.name }}" 
+                    data-page-id="{{ page.id }}" 
+                    onclick="event.preventDefault(); openEditModal(this)" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke-width="1.5" 
+                    stroke="currentColor" 
+                    class="size-6"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                  </svg>
+                </a>
+              @endeach
+
 
               <div class="divider my-2"></div>
               <a onclick="create_page_modal.showModal()" class="btn flex items-center py-2 transition-colors duration-300 transform rounded-lg  hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700">
@@ -125,19 +149,29 @@
   </dialog>
 
   <dialog id="update_page_modal" class="modal">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold">Update</h3>
-      <form action="">
-        <p class="py-4">Title</p>
-        <input value="{{ currentPage.name }}"  type="text" placeholder="Some Title in here" class="input input-ghost w-full max-w-xs" />
-        <button type="submit" class="btn btn-success text-white mx-2">Update</button>
-        <button type="" class="btn btn-error text-white mx-2">Delete</button>
+      <div class="modal-box">
+          <h3 class="text-lg font-bold">Update</h3>
+          <p class="py-4">Title</p>
+
+          <!-- Form untuk update -->
+          <form id="updateForm" action="" method="POST">
+              {{ csrfField() }}
+              <input id="pageNameInput" type="text" placeholder="Some Title in here" class="input input-ghost w-full max-w-xs" />
+              <button type="submit" class="btn btn-success text-white mx-2">Update</button>
+          </form>
+
+          <!-- Form untuk delete -->
+          <form id="deleteForm" action="{{ route('pages.destroy', [project.slug, version.slug, topbar.slug, currentPage.slug]) }}?_method=delete" method="POST">
+              {{ csrfField() }}
+              <input type="hidden" name="id" id="delete_id">
+              <button type="submit" class="btn btn-error text-white mx-2">Delete</button>
+          </form>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+          <button>close</button>
       </form>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
   </dialog>
+
 
   @!component('components/toast', { name: 'notification' })
   
@@ -187,6 +221,25 @@
         alert('Failed to save content!');
       }
     }
+
+    function openEditModal(element) {
+      // Dapatkan nama kucing dan ID dari atribut data
+      const pageName = element.getAttribute('data-page-name');
+      const pageId = element.getAttribute('data-page-id');
+
+      // Set nilai dari input di modal
+      document.getElementById('pageNameInput').value = pageName;
+
+      // Set action form ke route yang sesuai
+      const formAction = `/your-update-route/${pageId}`; // Ganti dengan route yang sesuai
+      document.getElementById('updateForm').action = formAction;
+
+      document.getElementById('delete_id').value = pageId;
+
+      // Tampilkan modal
+      document.getElementById('update_page_modal').showModal();
+  }
+
   </script>
 </body>
 @end

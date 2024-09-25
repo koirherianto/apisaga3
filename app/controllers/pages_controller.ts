@@ -120,6 +120,38 @@ export default class PagesController {
     })
   }
 
+  // destroy
+  async destroy({ session, params, response, request }: HttpContext) {
+    const pageWantToDelete = await Page.query().where('id', request.input('id')).firstOrFail()
+
+    if (pageWantToDelete.isDefault) {
+      session.flash('notification', {
+        type: 'error',
+        message: 'Cannot delete default page',
+      })
+      return response.redirect().back()
+    }
+
+    const project = await Project.query().where('slug', params.projectSlug).firstOrFail()
+    const [version, topbar, pages, pageYgLgDibuka] = await this.pages(
+      project,
+      params.versionSlug,
+      params.topbarSlug,
+      params.pageSlug // halaman yang user sedang buka
+    )
+
+    await pageWantToDelete.delete()
+
+    const halamanYangSamaDidelete = pageWantToDelete.slug === pageYgLgDibuka.slug
+
+    return response.redirect().toRoute('pages.editor', {
+      projectSlug: project.slug,
+      versionSlug: version.slug,
+      topbarSlug: topbar.slug,
+      pageSlug: halamanYangSamaDidelete ? pages[0].slug : pageYgLgDibuka.slug,
+    })
+  }
+
   private async pages(
     project: Project,
     versionSlug?: string,
