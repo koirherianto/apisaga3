@@ -21,7 +21,7 @@ export default class PagesController {
     return view.render('pages/index', { project, version, topbar, pages, currentPage })
   }
 
-  async store({ params, request, response }: HttpContext) {
+  async store({ session, params, request, response }: HttpContext) {
     const project = await Project.query().where('slug', params.projectSlug).firstOrFail()
 
     const [version, topbar, pages] = await this.pages(
@@ -30,6 +30,31 @@ export default class PagesController {
       params.topbarSlug,
       params.pageSlug
     )
+
+    if (request.input('title').length < 4) {
+      session.flash('notification', {
+        type: 'info',
+        message: 'Title must be at least 4 characters',
+      })
+
+      return response.redirect().back()
+    }
+
+    // check is title already exist
+    const isPageExist = await topbar
+      .related('pages')
+      .query()
+      .where('name', request.input('title'))
+      .first()
+
+    if (isPageExist) {
+      session.flash('notification', {
+        type: 'info',
+        message: 'Page already exist',
+      })
+
+      return response.redirect().back()
+    }
 
     // apakah ada page yang bernama sama
     let lastOrder = 0

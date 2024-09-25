@@ -1,0 +1,23 @@
+@if(flashMessages.has(name))
+    <div class="toast" id="toast-notification">
+        <div class="alert alert-{{ flashMessages.get('notification').type }}">
+        <span>{{ flashMessages.get(name).message }}</span>
+        </div>
+    </div>
+@end
+
+<script>
+    // Fungsi untuk membuat toast menghilang setelah 3 detik
+    window.onload = function() {
+        const toast = document.getElementById('toast-notification');
+        if (toast) {
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.5s ease';
+                toast.style.opacity = '0'; // Mengurangi opacity agar tidak langsung hilang
+                setTimeout(() => {
+                    toast.remove(); // Menghapus elemen dari DOM setelah transisi selesai
+                }, 500); // Sesuaikan dengan durasi transisi
+            }, 3000); // 3000 milidetik = 3 detik
+        }
+    }
+</script>
