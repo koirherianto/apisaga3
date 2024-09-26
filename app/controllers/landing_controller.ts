@@ -1,8 +1,9 @@
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class LandingController {
-  index({ view }: HttpContext) {
+  async index({ view, auth }: HttpContext) {
     // return inertia.render('home', { version: 6 })
+    await auth.check()
 
     return view.render('landing')
   }

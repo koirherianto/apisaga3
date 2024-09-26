@@ -12,7 +12,7 @@
 	</div>
 
 	<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-		<form class="space-y-6" action="login" method="POST">
+		<form class="space-y-6" action="{{ route('login.store') }}" method="POST">
 			{{ csrfField() }}
 			{{--  {{ inspect(flashMessages.all()) }}  --}}
 			<div>
@@ -74,7 +74,7 @@
 
 		<p class="mt-10 text-center text-sm text-gray-500">
 			Not a member?
-			<a href="/register" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+			<a href="{{ route('register') }}" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
 				Register this shit
 			</a>
 		</p>
